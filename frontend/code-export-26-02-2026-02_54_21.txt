@@ -1,0 +1,93 @@
+title Intelligent Grocery Shopping Agent Architecture
+
+// Client Layer
+Clients [icon: users] {
+  Web App [icon: monitor]
+  Mobile App [icon: smartphone]
+}
+
+React Frontend [icon: react] {
+  Shopping List Input [icon: edit-3]
+  Session Status [icon: activity]
+  Cart Review UI [icon: shopping-cart]
+}
+
+App API [icon: server] {
+  Auth Endpoints [icon: lock]
+  Session Management [icon: database]
+  Job Publisher [icon: send]
+}
+
+// API Layer
+
+// Core Domain Services
+Domain Services [icon: package, color: green] {
+  Session Service [icon: database]
+  Catalog Service [icon: search]
+  Pricing Inventory Service [icon: dollar-sign, label: "Pricing & Inventory"]
+  Cart Order Service [icon: shopping-cart, label: "Cart / Order"]
+  Preference Service [icon: heart]
+}
+
+// Agent Platform
+Agent Platform [icon: cpu, color: purple] {
+  Agent Orchestrator [icon: git-branch, label: "Orchestrator (LangGraph)"]
+  Tool Policy Gateway [icon: shield, label: "Tool / Policy Gateway"]
+  
+  Agents [icon: users] {
+    MultiModel Intake Agent [icon: inbox]
+    Orchestrator Agent [icon: file-text]
+    History & Preference Agent [icon: anchor]
+    Inventory & substitution Agent [icon: bar-chart-2]
+    Clarification Agent [icon: help-circle, label: "HITL Clarification"]
+    Conflict Agent[icon: edit]
+  }
+}
+
+// Data Layer
+Data Layer [icon: database, color: orange] {
+  PostgreSQL [icon: postgresql, label: "PostgreSQL (OLTP)"]
+}
+
+// Async & Integration
+
+// External
+External [icon: globe] {
+  LLM Provider [icon: openai, label: "LLM API"]
+  Retailer Feeds [icon: truck, label: "Retailer Data"]
+}
+
+// Observability
+
+// Connections - Client to API
+Clients > React Frontend
+React Frontend>App API
+
+
+// BFF to Domain Services
+App API > Session Service
+App API > Cart Order Service
+App API > Preference Service
+
+// Domain Services to Agent Platform
+Session Service > Agent Orchestrator: trigger workflow
+Agent Orchestrator > Tool Policy Gateway
+
+// Tool Gateway to Domain Services
+Tool Policy Gateway > Catalog Service: product search
+Tool Policy Gateway > Pricing Inventory Service: price/stock lookup
+Tool Policy Gateway > Preference Service: user prefs
+
+// Agent internal flow
+Agent Orchestrator > Agents
+Agents > Tool Policy Gateway: tool calls
+
+// Agent to External
+Tool Policy Gateway > LLM Provider: inference
+
+// Data connections
+Session Service <> PostgreSQL
+Catalog Service <> PostgreSQL
+Pricing Inventory Service <> PostgreSQL
+Cart Order Service <> PostgreSQL
+Preference Service <> PostgreSQL
